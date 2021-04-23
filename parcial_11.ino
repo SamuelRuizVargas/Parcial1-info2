@@ -8,35 +8,6 @@ int final [8];
 //INICIO DE CADA FILA LSBFIRST--------------------------------
 int fila[8] = {127, 191, 223, 239, 247, 251, 253, 254};
 
-//LETRAS Y NUMEROS--------------------------------------------
-int LetraA[8] = {0,56,68,68,124,68,68,68};
-int LetraB[8] = {0,120,68,68,120,68,68,120};
-int LetraC[8] = {0,56,68,64,64,64,68,56};
-int LetraD[8] = {0,120,68,68,68,68,68,120};
-int LetraE[8] = {0,124,64,64,124,64,64,124};
-int LetraF[8] = {0,124,64,64,124,64,64,64};
-int LetraG[8] = {0,56,68,64,92,68,68,56};
-int LetraH[8] = {102,102,102,126,126,102,102,102};
-int LetraI[8] = {0,56,16,16,16,16,16,56};
-int LetraK[8] = {0,66,66,68,120,68,66,66};
-int LetraL[8] = {0,64,64,64,64,64,64,124};
-int LetraM[8] = {0,68,108,84,68,68,68,68};
-int LetraN[8] = {0,68,68,100,84,76,68,68};
-int LetraO[8] = {0,56,68,68,68,68,68,56};
-int LetraP[8] = {0,124,68,68,124,64,64,64};
-int LetraQ[8] = {0,56,68,68,68,84,76,60};
-int LetraR[8] = {0, 60, 34, 34, 60, 40, 36, 34};
-int LetraS[8] = {0,56,68,64,56,4,68,56};
-int LetraT[8] = {0,124,16,16,16,16,16,16};
-int LetraU[8] = {0,56,68,68,68,84,76,60};
-int LetraV[8] = {0,68,68,68,68,68,40,16};
-int LetraW[8] = {0,68,68,68,68,84,108,68};
-int LetraX[8] = {0,68,68,40,16,40,68,68};
-int LetraZ[8] = {0,124,4,8,16,32,64,124};
-
-//Numeros
-
-
 //PRESETS-------------------------------------------------------
 int kokoro[8] = {0, 102, 153, 129, 66, 36, 24, 0};
 int TodoEncendido[8] = {255, 255, 255, 255, 255, 255, 255, 255};
@@ -50,7 +21,6 @@ int LV5[8]={16,16,16,16,16,16,16,16};
 int LV6[8]={32,32,32,32,32,32,32,32};
 int LV7[8]={64,64,64,64,64,64,64,64};
 int LV8[8]={128,128,128,128,128,128,128,128};
-
 
 //lineas horizonatales 
 int LH1[8]={1,0,0,0,0,0,0,0};
@@ -80,12 +50,14 @@ int cuadro4[8] = {0,0,0,24,24,0,0,0};
 void iluminar(int [8]);
 void verificacion(int [8]);
 void imagen();
+void publik();
 
 
 //SETUP ARDUINO---------------------------------------------------
 void setup()
 {
   Serial.begin(9600);
+  Serial.setTimeout(500);
   // 74HC595
   pinMode(datos, OUTPUT); // Entrada de datos
   pinMode(salida, OUTPUT); // Salida de datos
@@ -97,7 +69,7 @@ void setup()
   int opcion, Final [8];;
   Serial.println("Indique su opcion");
   Serial.print("\n");
-  Serial.println("1- Patron de letras y numeros (Escritura por monitor)");
+  Serial.println("1- Secuencia de patrones (Escritura por monitor)");
   Serial.println("2- Patron predefinido");
   Serial.println("3- Patron personalizado Animacion(Led por Led)");
   Serial.println("4- Patron personalizado Estatico (Led por Led)");
@@ -108,23 +80,12 @@ void setup()
   switch (opcion)
   {
     //---------------------------------------
-    case 1: //letras y numeros
+    case 1: //Patrones digitados por el usuario 
     {
-      char patron;
-      Serial.print("Acontinuacion ingresa el patron: ");
-      Serial.print("\n");
-      patron=Serial.parseInt();
-      
-      Serial.print(patron);
-      /*
-      new int num;
-      int array[num]
-      while (Serial.available()==0); 
-      Serial.readBytes(array, num);
-      delete num;
-      */
-      
+           
+      publik(); 
     }
+    //fin case
     break;
     //---------------------------------------
     case 2: //patron predefinido
@@ -216,8 +177,12 @@ void setup()
         Serial.print("Cadena de led horiontal ");
         Serial.print(j+1);
         Serial.print(": ");
-        while (Serial.available()<=9);
+        while (Serial.available()==0);
         Serial.readBytes(linea, 8);
+        for (int i=0;i<7;i++)
+        {
+          Serial.print(linea[i]);
+        }
         Serial.print("\n");
         veri=false;
         while (veri==false)
@@ -238,8 +203,12 @@ void setup()
               Serial.print("Cadena de led horiontal ");
               Serial.print(j+2);
               Serial.print(": ");
-              while (Serial.available()<=9);
+              while (Serial.available()==0);
               Serial.readBytes(linea, 8);
+              for (int i=0;i<7;i++)
+              {
+                Serial.print(linea[i]);
+              }
               Serial.print("\n");
               break;
             }
@@ -307,6 +276,161 @@ void loop()
 // FUNCIONES 
 
 
+void publik()
+{
+	
+  int patron,time; 
+  int *p;
+  
+  Serial.println("A continuacion ingrese la cantida de patrones a mostrar: ");
+  while (Serial.available()==0);
+  patron=Serial.parseInt();
+  
+  Serial.println("A continuacion ingrese el tiempo entre patrones: ");
+  while (Serial.available()==0);
+  time=Serial.parseInt();
+  
+  Serial.print("\n");
+ 
+  p = new int[8*patron]; //Crear arreglo dinamico 
+	
+  for(int h=-1;h<patron-1;h++)
+  {
+  	 char posi, linea[8],array[8][8],arreg[8];
+      unsigned int numero[8]={128,64,32,16,8,4,2,1}, bits[8], posi2, posi1;
+      int Final[8];
+      bool veri;
+      Serial.print("A continuacion ingrese 8 digitos por linea horizontal empezando desde arriba, los leds encendidos se marcan con una X y los apagados con la letra O. EJ: 0000X000");
+      Serial.print("\n");
+      for (int j=0; j<=7; j++)
+      {
+        Serial.print("Cadena de led horiontal ");
+        Serial.print(j+1);
+        Serial.print(": ");
+        Serial.flush();
+        while (Serial.available()==0);
+        Serial.readBytes(linea, 8);
+        for (int i=0;i<7;i++)
+        {
+          Serial.print(linea[i]);
+        }
+        Serial.print("\n");
+        veri=false;
+        while (veri==false)
+        {
+          for (int i=0; i<=7; i++)
+          {
+            posi=linea[i];
+            if(posi==79 || posi==88 || posi==120 || posi==111)
+            {
+              veri=true;
+            }
+            else
+            {
+              veri=false;
+
+              Serial.flush();
+              Serial.print("Cadena invalida");
+              Serial.print("\n");
+              Serial.print("Cadena de led horiontal ");
+              Serial.print(j+2);
+              Serial.print(": ");
+              while (Serial.available()==0);
+              Serial.readBytes(linea, 8);
+              for (int i=0;i<7;i++)
+              {
+                Serial.print(linea[i]);
+              }
+              Serial.print("\n");
+              break;
+            }
+          }
+        }
+        for(int i=0; i<=7; i++)
+        {
+          posi=linea[i];
+          arreg[i]=posi;
+        }
+        for(int i=0; i<=7; i++)
+        {
+          posi=arreg[i];
+          array[j][i]=posi;
+        }
+      }
+      
+      //desde aqui traduccion a bits
+      for(int k=0; k<=7; k++)
+      {
+        char actual[8]={0};
+        for(int i=0; i<=7; i++)
+        {
+          posi=array[k][i];
+          actual[i]=posi;
+        }
+        for(int i=0; i<=7; i++)
+        {
+          posi=actual[i];
+          posi2=numero[i];
+          if (posi=='x' || posi=='X')
+          {
+            bits[i]=posi2;
+          }
+          else
+          {
+            bits[i]=0;
+          }
+        }
+        int suma=0;
+        for(int i=0; i<=7; i++)
+        {
+          posi1=bits[i];
+          suma+=posi1;
+        }
+        Final[k]=suma;
+      }
+     	
+      int num1=Final[0], num2=Final[1], num3=Final[2], num4=Final[3], num5=Final[4], num6=Final[5], num7=Final[6], num8=Final[7];
+        p[(h+1)*8]=num1;
+        p[((h+1)*8)+1]=num2;
+        p[((h+1)*8)+2]=num3;
+        p[((h+1)*8)+3]=num4;
+        p[((h+1)*8)+4]=num5;
+        p[((h+1)*8)+5]=num6;
+        p[((h+1)*8)+6]=num7;
+        p[((h+1)*8)+7]=num8;
+      
+  }
+  int semifinal [8];
+  for (int k=-1; k<patron-1; k++)
+  {
+    int num1=p[((k+1)*8)];
+    int num2=p[((k+1)*8)+1];
+    int num3=p[((k+1)*8)+2];
+    int num4=p[((k+1)*8)+3];
+    int num5=p[((k+1)*8)+4];
+    int num6=p[((k+1)*8)+5];
+    int num7=p[((k+1)*8)+6];
+    int num8=p[((k+1)*8)+7];
+
+    semifinal[0]=num1;
+    semifinal[1]=num2;
+    semifinal[2]=num3;
+    semifinal[3]=num4;
+    semifinal[4]=num5;
+    semifinal[5]=num6;
+    semifinal[6]=num7;
+    semifinal[7]=num8;
+
+    
+    for (int i=0; i<=time; i++)
+    {
+      verificacion(semifinal);
+    }
+  }
+
+  delete[] p;  
+}
+
 void Iluminar(int array[8])
 {
   int j = 0;
@@ -349,8 +473,12 @@ void imagen()
         Serial.print("Cadena de led horiontal ");
         Serial.print(j+1);
         Serial.print(": ");
-        while (Serial.available()<=9);
+        while (Serial.available()==0);
         Serial.readBytes(linea, 8);
+        for (int i=0;i<7;i++)
+        {
+          Serial.print(linea[i]);
+        }
         Serial.print("\n");
         veri=false;
         while (veri==false)
@@ -371,8 +499,12 @@ void imagen()
               Serial.print("Cadena de led horiontal ");
               Serial.print(j+2);
               Serial.print(": ");
-              while (Serial.available()<=9);
+              while (Serial.available()==0);
               Serial.readBytes(linea, 8);
+              for (int i=0;i<7;i++)
+              {
+                Serial.print(linea[i]);
+              }
               Serial.print("\n");
               break;
             }

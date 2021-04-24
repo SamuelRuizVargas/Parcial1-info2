@@ -179,7 +179,7 @@ void setup()
         Serial.print(": ");
         while (Serial.available()==0);
         Serial.readBytes(linea, 8);
-        for (int i=0;i<7;i++)
+        for (int i=0;i<=7;i++)
         {
           Serial.print(linea[i]);
         }
@@ -205,7 +205,7 @@ void setup()
               Serial.print(": ");
               while (Serial.available()==0);
               Serial.readBytes(linea, 8);
-              for (int i=0;i<7;i++)
+              for (int i=0;i<=7;i++)
               {
                 Serial.print(linea[i]);
               }
@@ -256,6 +256,7 @@ void setup()
         }
         Final[k]=suma;
       }
+      Iluminar(Final);
     }
     break;
     //-------------------------------------
@@ -310,7 +311,7 @@ void publik()
         Serial.flush();
         while (Serial.available()==0);
         Serial.readBytes(linea, 8);
-        for (int i=0;i<7;i++)
+        for (int i=0;i<=7;i++)
         {
           Serial.print(linea[i]);
         }
@@ -337,7 +338,7 @@ void publik()
               Serial.print(": ");
               while (Serial.available()==0);
               Serial.readBytes(linea, 8);
-              for (int i=0;i<7;i++)
+              for (int i=0;i<=7;i++)
               {
                 Serial.print(linea[i]);
               }
@@ -475,7 +476,7 @@ void imagen()
         Serial.print(": ");
         while (Serial.available()==0);
         Serial.readBytes(linea, 8);
-        for (int i=0;i<7;i++)
+        for (int i=0;i<=7;i++)
         {
           Serial.print(linea[i]);
         }
@@ -501,7 +502,7 @@ void imagen()
               Serial.print(": ");
               while (Serial.available()==0);
               Serial.readBytes(linea, 8);
-              for (int i=0;i<7;i++)
+              for (int i=0;i<=7;i++)
               {
                 Serial.print(linea[i]);
               }
